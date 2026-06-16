@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         CombatState combatState = combat.GetState();
-        movement.MovementControl(combatState, Time.fixedDeltaTime);
+        movement.MovementControl(combatState, Time.fixedDeltaTime, combat.IsInAttackDuration());
     }
 
     #endregion

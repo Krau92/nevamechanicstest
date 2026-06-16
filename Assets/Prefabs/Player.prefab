@@ -160,6 +160,7 @@ MonoBehaviour:
   meleePrefab: {fileID: 2510565857928163978, guid: d7553c6d11c738b40bcf9206f986f11d, type: 3}
   rangedPrefab: {fileID: 1815184982427849882, guid: 8b28b27c96e5b194c8b5a97526b817e4, type: 3}
   rangedCooldown: 0.5
+  comboCooldown: 0.75
   combo1Stats:
     AttackDuration: 0.25
     ComboWindow: 0.75
@@ -173,7 +174,7 @@ MonoBehaviour:
     VerticalDrag: 50
     FallGravityMultiplier: 0.1
   combo3Stats:
-    AttackDuration: 0.25
+    AttackDuration: 0.5
     ComboWindow: 0.5
     HorizontalDrag: 80
     VerticalDrag: 80
@@ -183,7 +184,7 @@ MonoBehaviour:
     ComboWindow: 0
     HorizontalDrag: 0
     VerticalDrag: 0
-    FallGravityMultiplier: 5
+    FallGravityMultiplier: 50
 --- !u!212 &707954860014696749
 SpriteRenderer:
   serializedVersion: 2

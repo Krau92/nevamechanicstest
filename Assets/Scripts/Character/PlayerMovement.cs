@@ -146,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void MovementControl(CombatState combatState, float fixedDt)
+    public void MovementControl(CombatState combatState, float fixedDt, bool isInAttackDuration)
     {
         Vector2 velocity = rb.linearVelocity;
 
@@ -165,7 +165,8 @@ public class PlayerMovement : MonoBehaviour
         if (combatState.Phase != CombatPhase.NotAttacking)
         {
             velocity.x = Mathf.MoveTowards(velocity.x, 0f, combatState.HorizontalDrag * fixedDt);
-            velocity.y = Mathf.MoveTowards(velocity.y, 0f, combatState.VerticalDrag * fixedDt);
+            if (isInAttackDuration)
+                velocity.y = Mathf.MoveTowards(velocity.y, 0f, combatState.VerticalDrag * fixedDt);
         }
         else if (isDashing)
         {

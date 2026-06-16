@@ -23,6 +23,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Cooldowns")]
     [SerializeField] private float rangedCooldown = 0.5f;
+    [SerializeField] private float comboCooldown = 0.75f;
 
     [Header("Combo Stats")]
     [SerializeField] private ComboStats combo1Stats = new ComboStats
@@ -55,7 +56,7 @@ public class PlayerCombat : MonoBehaviour
         ComboWindow = 0f,
         HorizontalDrag = 0f,
         VerticalDrag = 0f,
-        FallGravityMultiplier = 5f
+        FallGravityMultiplier = 7f
     };
 
     #endregion
@@ -67,6 +68,7 @@ public class PlayerCombat : MonoBehaviour
     private CombatPhase currentPhase = CombatPhase.NotAttacking;
     private float attackDurationTimer;
     private float comboWindowTimer;
+    private float comboTimer;
 
     #endregion
 
@@ -94,6 +96,9 @@ public class PlayerCombat : MonoBehaviour
         if (rangedCooldownTimer > 0f)
             rangedCooldownTimer -= dt;
 
+        if (comboTimer > 0f)
+            comboTimer -= dt;
+
         if (currentPhase == CombatPhase.NotAttacking)
             return;
 
@@ -108,7 +113,7 @@ public class PlayerCombat : MonoBehaviour
             return;
         }
 
-        if (comboWindowTimer <= 0f && isGrounded)
+        if (comboWindowTimer <= 0f && isGrounded || currentPhase == CombatPhase.Combo3 && comboTimer <= 0)
             TransitionTo(CombatPhase.NotAttacking);
     }
 
@@ -200,6 +205,7 @@ public class PlayerCombat : MonoBehaviour
         var stats = GetPhaseStats(phase);
         attackDurationTimer = stats.AttackDuration;
         comboWindowTimer = stats.ComboWindow;
+        comboTimer = comboCooldown;
     }
 
     private bool TryGetActiveStats(out ComboStats stats)
@@ -212,16 +218,19 @@ public class PlayerCombat : MonoBehaviour
                 return false;
 
             case CombatPhase.SpikeAttack:
+                stats = spikeStats;
                 if (attackDurationTimer <= 0f)
                     return false;
-                stats = spikeStats;
                 return true;
 
             default:
-                if (attackDurationTimer <= 0f && comboWindowTimer <= 0f)
-                    return false;
-                stats = GetPhaseStats(currentPhase);
-                return true;
+                if (comboWindowTimer >= 0f)
+                {
+                    stats = GetPhaseStats(currentPhase);
+                    if (attackDurationTimer >= 0)
+                    return true;
+                } 
+                return false;
         }
     }
 

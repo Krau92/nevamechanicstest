@@ -53,6 +53,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Sprint")]
     [SerializeField] private float sprintSpeedMultiplier = 1.5f;
 
+    [Header("Combo Movement")]
+    [SerializeField] private float comboAccelMultiplier = 0.5f;
+
     [Header("Dash")]
     [SerializeField] private float dashForce = 20f;
     [SerializeField] private float dashDuration = 0.2f;
@@ -124,8 +127,10 @@ public class PlayerMovement : MonoBehaviour
         {
             coyoteTimer -= dt;
         }
-
-        jumpBufferTimer -= dt;
+        if (jumpBufferTimer > 0f)
+        {
+            jumpBufferTimer -= dt;
+        }
 
         if (isJumping)
         {
@@ -161,12 +166,9 @@ public class PlayerMovement : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
-
-        if (combatState.Phase != CombatPhase.NotAttacking)
+        if (isInAttackDuration || combatState.Phase == CombatPhase.SpikeAttack)
         {
             velocity.x = Mathf.MoveTowards(velocity.x, 0f, combatState.HorizontalDrag * fixedDt);
-            if (isInAttackDuration)
-                velocity.y = Mathf.MoveTowards(velocity.y, 0f, combatState.VerticalDrag * fixedDt);
         }
         else if (isDashing)
         {
@@ -180,6 +182,12 @@ public class PlayerMovement : MonoBehaviour
             float accel = IsGrounded ? acceleration : airAcceleration;
             float decel = IsGrounded ? deceleration : airDeceleration;
 
+            if (combatState.Phase != CombatPhase.NotAttacking)
+            {
+                accel *= comboAccelMultiplier;
+                decel *= comboAccelMultiplier;
+            }
+
             if (moveInput.x != 0f)
             {
                 velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, accel * fixedDt);
@@ -191,11 +199,17 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        if (isInAttackDuration)
+        {
+            velocity.y = Mathf.MoveTowards(velocity.y, 0f, combatState.VerticalDrag * fixedDt);
+        }
+
         if (jumpPressed)
         {
             velocity.y = jumpForce;
             jumpPressed = false;
             isJumping = true;
+            isDashing = false;
             jumpHoldTimer = jumpHoldDuration;
             coyoteTimer = 0f;
         }
@@ -210,7 +224,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (combatState.Phase != CombatPhase.NotAttacking)
         {
-            gravityMultiplier *= combatState.FallGravityMultiplier;
+            if (combatState.Phase == CombatPhase.SpikeAttack)
+            {
+                gravityMultiplier = isInAttackDuration ? 0f : combatState.FallGravityMultiplier;
+            }
+            else
+            {
+                gravityMultiplier *= combatState.FallGravityMultiplier;
+            }
         }
         else if (!IsGrounded)
         {

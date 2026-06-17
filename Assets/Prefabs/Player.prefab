@@ -121,7 +121,7 @@ MonoBehaviour:
   moveSpeed: 8
   acceleration: 60
   deceleration: 80
-  airAcceleration: 30
+  airAcceleration: 40
   airDeceleration: 40
   maxSpeed: 12
   jumpForce: 15
@@ -139,6 +139,7 @@ MonoBehaviour:
   moveThreshold: 0.1
   dashDecelerationMultiplier: 0.5
   sprintSpeedMultiplier: 1.5
+  comboAccelMultiplier: 0.2
   dashForce: 22
   dashDuration: 0.5
   dashColliderShrinkYMultiplier: 0.5
@@ -166,13 +167,13 @@ MonoBehaviour:
     ComboWindow: 0.75
     HorizontalDrag: 40
     VerticalDrag: 50
-    FallGravityMultiplier: 0.1
+    FallGravityMultiplier: 0.25
   combo2Stats:
     AttackDuration: 0.25
     ComboWindow: 0.75
     HorizontalDrag: 40
     VerticalDrag: 50
-    FallGravityMultiplier: 0.1
+    FallGravityMultiplier: 0.25
   combo3Stats:
     AttackDuration: 0.5
     ComboWindow: 0.5
@@ -180,11 +181,11 @@ MonoBehaviour:
     VerticalDrag: 80
     FallGravityMultiplier: 1
   spikeStats:
-    AttackDuration: 0.5
+    AttackDuration: 0.2
     ComboWindow: 0
-    HorizontalDrag: 0
-    VerticalDrag: 0
-    FallGravityMultiplier: 50
+    HorizontalDrag: 100
+    VerticalDrag: 100
+    FallGravityMultiplier: 25
 --- !u!212 &707954860014696749
 SpriteRenderer:
   serializedVersion: 2

@@ -170,7 +170,10 @@ public class PlayerCombat : MonoBehaviour
 
     public bool IsInAttackDuration()
     {
-        return TryGetActiveStats(out _);
+        if(attackDurationTimer > 0f)
+            return true;
+            
+        return false;
     }
 
     public void CancelAttack()
@@ -179,7 +182,7 @@ public class PlayerCombat : MonoBehaviour
             TransitionTo(CombatPhase.NotAttacking);
     }
 
-    public CombatState      GetState()
+    public CombatState GetState()
     {
         if (TryGetActiveStats(out var stats))
             return new CombatState(currentPhase, stats.HorizontalDrag, stats.VerticalDrag, stats.FallGravityMultiplier);
@@ -227,7 +230,6 @@ public class PlayerCombat : MonoBehaviour
                 if (comboWindowTimer >= 0f)
                 {
                     stats = GetPhaseStats(currentPhase);
-                    if (attackDurationTimer >= 0)
                     return true;
                 } 
                 return false;
